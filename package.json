@@ -1,0 +1,58 @@
+{
+  "name": "coronavirus-outbreak",
+  "version": "1.0.0",
+  "description": "data visualization project for coronavirus outbreak",
+  "main": "index.js",
+  "dependencies": {
+    "babel-plugin-styled-components": "^1.10.7",
+    "core-js": "^3.6.4",
+    "d3": "^5.15.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "styled-components": "^5.0.1",
+    "topojson": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "json-loader": "^0.5.7",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "webpack-dev-server --config webpack.config.development.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanyulo/coronavirus-outbreak.git"
+  },
+  "keywords": [
+    "coronavirus",
+    "china",
+    "data",
+    "visualization"
+  ],
+  "author": "hanyulo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hanyulo/coronavirus-outbreak/issues"
+  },
+  "homepage": "https://github.com/hanyulo/coronavirus-outbreak#readme"
+}

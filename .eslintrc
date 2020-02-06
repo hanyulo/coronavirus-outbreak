@@ -1,0 +1,29 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "import/no-dynamic-require": "off",
+    "react/no-array-index-key": "off",
+    "no-param-reassign": "off",
+    "react/jsx-props-no-spreading": "off",
+    "semi": [2, 'always'],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "arrow-parens": "off",
+  },
+  "globals": {
+    "describe": "readonly",
+    "it": "readonly",
+    "before": "readonly",
+    "after": "readonly",
+    "beforeAll": "readonly",
+    "afterAll": "readonly",
+    "fetch": 'readonly',
+    "document": 'readonly',
+    "window": 'readonly',
+    "expect": 'readonly',
+    "jest": 'readonly',
+    "Headers": readonly,
+    "localStorage": readonly,
+  }
+}
