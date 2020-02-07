@@ -12,6 +12,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // time.
 const TOKEN_PATH = path.resolve(__dirname, './token.json');
 const CREDENTIALS_PATH = path.resolve(__dirname, './credentials.json');
+const TEST_DATA_FILE_PATH = path.resolve(__dirname, '../data/testData.json');
 const SPREADSHEET_ID_JH = '1UF2pSkFTURko2OvfHWWlFpDFAr1UxCBA4JLwlSP6KFo';
 const SPREADSHEET_ID_TPTS = '1lwO6sSXGo2PnWXmH_4g_cHQgIfPwXbtSR-g_ESP3f1o';
 
@@ -54,7 +55,7 @@ function getNewToken(oAuth2Client, callback) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+function authorize(credentials, callback, resolve, reject) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -66,11 +67,11 @@ function authorize(credentials, callback) {
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getNewToken(oAuth2Client, callback);
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
+    callback(oAuth2Client, resolve, reject);
   });
 }
 
-function listMajors(auth) {
+function listMajors(auth, resolve, reject) {
   const sheets = google.sheets({ version: 'v4', auth });
   sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID_JH,
@@ -80,15 +81,40 @@ function listMajors(auth) {
     const rows = res.data.values;
     if (rows.length) {
       // Print columns A and E, which correspond to indices 0 and 4.
-      johnHopkinsTimeSeries(rows);
+      resolve(johnHopkinsTimeSeries(rows));
     } else {
-      console.log('No data found.');
+      reject(new Error('No data found.'));
     }
   });
 }
 
-fs.readFile(CREDENTIALS_PATH, (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Sheets API.
-  authorize(JSON.parse(content), listMajors);
-});
+
+function main(resolve, reject) {
+  fs.readFile(CREDENTIALS_PATH, (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), listMajors, resolve, reject);
+  });
+}
+
+
+function fetchSpreadSheet() {
+  return new Promise((resolve, reject) => {
+    main(resolve, reject);
+  });
+}
+
+fetchSpreadSheet()
+  .then((data) => {
+    try {
+      fs.unlinkSync(TEST_DATA_FILE_PATH);
+    } catch (err) {
+      // console.error(err);
+    }
+    fs.writeFile(TEST_DATA_FILE_PATH, JSON.stringify(data, null, 2), (err) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log('fetchdata successfully')
+    });
+  });

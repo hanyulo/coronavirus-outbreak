@@ -76,19 +76,18 @@ const rowsHandler = (row) => {
     if (!timeSeriesMap[timestamp]) {
       timeSeriesMap[timestamp] = {
         dateString,
-        data: [{
-          province: row[columnKey.province],
-          confirmed: +row[i],
-        }],
+        data: {
+          [row[columnKey.province]]: +row[i],
+        },
       };
     } else {
       const previousData = timeSeriesMap[timestamp];
       timeSeriesMap[timestamp] = {
         ...previousData,
-        data: [...previousData.data, {
-          province: row[columnKey.province],
-          confirmed: +row[i],
-        }],
+        data: {
+          ...previousData.data,
+          [row[columnKey.province]]: +row[i],
+        },
       };
     }
   }
