@@ -60,7 +60,7 @@ class Slider extends Component {
   }
 
   componentDidMount() {
-    
+
   }
 
   _passCurrentStep() {
@@ -74,7 +74,8 @@ class Slider extends Component {
   }
 
   _onMouseMoveHandler(e) {
-    const difference = e.clientX - this.startXPosition;
+    const pointer = e.touches ? e.touches[0] : e;
+    const difference = pointer.clientX - this.startXPosition;
     const ratio = (difference / this.barWidth) * 100;
     if (difference <= 0) {
       this.setState({
@@ -101,12 +102,16 @@ class Slider extends Component {
     this.barWidth = this.bar.clientWidth;
     this.startXPosition = this.bar.getBoundingClientRect().left;
     document.addEventListener('mousemove', this.onMouseMoveHandler);
+    document.addEventListener('touchmove', this.onMouseMoveHandler);
     document.addEventListener('mouseup', this.onMouseUpHandler);
+    document.addEventListener('touchend', this.onMouseUpHandler);
   }
 
   _onMouseUpHandler(e) {
     document.removeEventListener('mousemove', this.onMouseMoveHandler);
+    document.removeEventListener('touchmove', this.onMouseMoveHandler);
     document.removeEventListener('mouseup', this.onMouseUpHandler);
+    document.removeEventListener('touchend', this.onMouseUpHandler);
   }
 
   render() {
@@ -122,6 +127,7 @@ class Slider extends Component {
           ref={node => { this.bar = node; }}
         >
           <Thumb
+            onTouchStart={this.onMouseDownHandler}
             onMouseDown={this.onMouseDownHandler}
             left={xPosition}
             ref={node => { this.thumb = node; }}
