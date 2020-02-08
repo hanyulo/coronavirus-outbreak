@@ -7,22 +7,32 @@ import cn from '../data/zh-mainland-provinces.json';
 import Slider from './Slider';
 
 const width = 700;
-const height = 500;
-const mapRatio = 0.7;
+const mapRatio = 0.58;
+const height = width * mapRatio;
+const scaleRatio = 0.71;
 const DEFAULT_MAP_COLOE = '#C8C8C8';
 const BORDER_COLOR = '#333';
 const HOVER_COLOR = '#0083CB';
 
-const Canvas = styled.div`
-  width: ${width};
+const Container = styled.div`
+  max-width: ${width}px;
   margin: 0 auto;
   margin-top: 20px;
   border: 1px solid black;
+  padding: 20px;
+  box-sizing: content-box;
 `;
 
+// const Geo = styled.svg.attrs({
+//   viewBox: `${width / 2} ${height / 2} ${width} ${height}`,
+// })`
+//   margin: 20px auto;
+// `;
+
+
 const Geo = styled.svg`
-  margin: 0 auto;
-  width: ${width}px;
+  margin: 20px auto;
+  width: 100%;
   height: ${height}px;
 `;
 
@@ -41,7 +51,6 @@ const ToolTip = styled.div`
 const Header = styled.div`
   color: #333;
   font-weight: 600;
-  margin-bottom: 10px;
   font-size: 26px;
 `;
 
@@ -99,10 +108,17 @@ class ChinaChronological extends Component {
     this.colorProcessor = this._colorProcessor.bind(this);
     this.getConfirmedCount = this._getConfirmedCount.bind(this);
     this.updateData = this._updateData.bind(this);
+    this.drawChina = this._drawChina.bind(this);
+    this.container = null;
   }
 
   componentDidMount() {
     if (this.geo) {
+      // TODO: need to remove such listener
+      d3.select(window).on('resize', () => {
+        this._cleanCanvas();
+        this._drawChina();
+      });
       this._drawChina();
     }
   }
@@ -111,6 +127,13 @@ class ChinaChronological extends Component {
     if (this.geo) {
       this._drawChina();
     }
+  }
+
+  _cleanCanvas() {
+    d3
+      .select(this.geo)
+      .selectAll('path')
+      .remove();
   }
 
   _updateData(step) {
@@ -122,10 +145,7 @@ class ChinaChronological extends Component {
       step,
       dateString,
     }, () => {
-      d3
-        .select(this.geo)
-        .selectAll('path')
-        .remove();
+      this._cleanCanvas();
       this._drawChina();
     });
   }
@@ -153,11 +173,14 @@ class ChinaChronological extends Component {
 
   _drawChina() {
     const { step } = this.state;
+    const clientWidth = this.container.clientWidth;
+    const clientHeight = clientWidth * mapRatio;
+    this.geo.style.height = clientHeight;
     const projection = d3
       .geoMercator()
-      .scale(600)
+      .scale(clientWidth * scaleRatio)
       .center([104.4898, 37.5854])
-      .translate([width / 2, height / 2]);
+      .translate([clientWidth / 2, clientHeight / 2]);
 
     const path = d3.geoPath(projection);
     // const countries = topojson.feature(global, global.objects.countries).features;
@@ -219,7 +242,9 @@ class ChinaChronological extends Component {
     const { dateString } = this.state;
     const sortedTimetamps = Object.keys(data);
     return (
-      <Canvas>
+      <Container
+        ref={(node) => { this.container = node; }}
+      >
         <Header>{`日期：${dateString}`}</Header>
         <Geo
           ref={(node) => { this.geo = node; }}
@@ -233,7 +258,7 @@ class ChinaChronological extends Component {
         <ToolTip
           ref={(node) => { this.tooltip = node; }}
         />
-      </Canvas>
+      </Container>
     );
   }
 }
