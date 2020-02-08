@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Container = styled.div`
-  padding: 20px;
   display: flex;
   align-items: center;
 `;
@@ -14,7 +13,7 @@ const Bar = styled.div`
   border-radius: 5px;
   position: relative;
   flex-grow: 1;
-  margin: 0 10px;
+  margin: 0 15px;
 `;
 
 const Thumb = styled.div.attrs(props => ({
@@ -61,9 +60,7 @@ class Slider extends Component {
   }
 
   componentDidMount() {
-    if (this.bar) {
-      this.barWidth = this.bar.clientWidth;
-    }
+    
   }
 
   _passCurrentStep() {
@@ -79,6 +76,14 @@ class Slider extends Component {
   _onMouseMoveHandler(e) {
     const difference = e.clientX - this.startXPosition;
     const ratio = (difference / this.barWidth) * 100;
+    if (difference <= 0) {
+      this.setState({
+        xPosition: 0,
+      }, () => {
+        this._passCurrentStep();
+      });
+      return;
+    }
     if (ratio >= 0 && ratio <= 100) {
       this.setState({
         xPosition: ratio,
@@ -93,9 +98,8 @@ class Slider extends Component {
   }
 
   _onMouseDownHandler(e) {
-    if (!this.startXPosition) {
-      this.startXPosition = e.clientX;
-    }
+    this.barWidth = this.bar.clientWidth;
+    this.startXPosition = this.bar.getBoundingClientRect().left;
     document.addEventListener('mousemove', this.onMouseMoveHandler);
     document.addEventListener('mouseup', this.onMouseUpHandler);
   }
