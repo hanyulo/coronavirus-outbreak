@@ -1,6 +1,5 @@
 # coronavirus-outbreak
-data visualization for coronavirus outbreak
-
+data visualization for coronavirus outbreak in China
 
 ## To Do List
 1. [X] Draw China Map
@@ -8,13 +7,21 @@ data visualization for coronavirus outbreak
 3. [X] crawl data from John Hopkins DOC
 4. [X] compile data and show it on map
     * criteria: based on date
-5. [ ] HK, Macau map
-6. [ ] scroll bar position
-7. [ ] request real data from PST
-8. [ ] handle mobile version
+5. [X] HK, Macau map
+6. [X] scroll bar position
+7. [X] simple mobile version
+8. [ ] request real data from TPTS
+9. [ ] need granular info presentation for district, city, etc in map
+10. [ ] sophisticated mobile version
+    * scrollable
+    * same ratio
 
 
-## Run
-`npm run start:dev`
+## How to use it
 
-`npm run build`
+### Development
+* port number: 3000
+* command `npm run start:dev`
+
+### Production
+* command `npm run build`
