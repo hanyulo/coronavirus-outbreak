@@ -21,6 +21,8 @@
     "babel-plugin-styled-components": "^1.10.7",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.1.1",
+    "core-js": "^3.6.4",
+    "d3": "^5.15.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-standard": "^14.1.0",
@@ -31,8 +33,15 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-standard": "^4.0.1",
+    "gh-pages": "^2.2.0",
+    "googleapis": "^39.2.0",
     "html-webpack-plugin": "^3.2.0",
     "json-loader": "^0.5.7",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "styled-components": "^5.0.1",
+    "topojson": "^3.0.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.3"
@@ -41,7 +50,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "webpack-dev-server --config webpack.config.development.js",
     "fetchdata": "node ./src/utils/fetchSpreadSheet",
-    "build": "webpack --config webpack.config.production.js"
+    "build": "webpack --config webpack.config.production.js",
+    "build:page": "webpack --config webpack.config.public.production.js",
+    "deploy": "npm run build:page && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
