@@ -24,18 +24,30 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    alias: {
+      react: path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+    },
+  },
   externals: {
     'styled-components': {
+      commonjs: 'styled-components',
       commonjs2: 'styled-components',
-      amd: 'styled-components',
+      amd: 'StyledComponents',
+      root: 'StyledComponents',
     },
     react: {
+      commonjs: 'react',
       commonjs2: 'react',
-      amd: 'react',
+      amd: 'React',
+      root: 'React',
     },
     'react-dom': {
+      commonjs: 'react-dom',
       commonjs2: 'react-dom',
-      amd: 'react-dom',
+      amd: 'ReactDOM',
+      root: 'ReactDOM',
     },
   },
 };
