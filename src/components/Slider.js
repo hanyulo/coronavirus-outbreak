@@ -147,6 +147,8 @@ Slider.defaultProps = {
 Slider.propTypes = {
   totalSteps: PropTypes.number.isRequired,
   updateData: PropTypes.func.isRequired,
+  startLabel: PropTypes.string.isRequired,
+  endLabel: PropTypes.string.isRequired,
 };
 
 export default Slider;

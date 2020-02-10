@@ -7,15 +7,15 @@ import hkMac from '../data/zh-hkg-mac.json';
 // import global from '../data/world.topojson';
 import Slider from './Slider';
 
+
 const width = 700;
 const mapRatio = 0.58;
 const height = width * mapRatio;
 const scaleRatio = 0.71;
 const DEFAULT_MAP_COLOE = '#C8C8C8';
 const BORDER_COLOR = '#333';
-const HOVER_COLOR = '#0083CB';
 const centerChinaLongtitude = 104.4898;
-const centerChinaLatitude = 37.5854
+const centerChinaLatitude = 37.5854;
 
 const widthSAR = 130;
 const mapRatioSAR = 0.8;
@@ -25,9 +25,6 @@ const scaleRatioRSA = 55;
 const Container = styled.div`
   max-width: ${width}px;
   margin: 0 auto;
-  margin-top: 20px;
-  border: 1px solid black;
-  padding: 20px;
   box-sizing: content-box;
   position: relative;
 `;
@@ -358,36 +355,32 @@ class ChinaChronological extends Component {
     const { dateString } = this.state;
     const sortedTimetamps = Object.keys(data);
     return (
-      <div>
-        <Container
-          ref={(node) => { this.container = node; }}
+      <Container
+        ref={(node) => { this.container = node; }}
+      >
+        <Header>{`日期：${dateString}`}</Header>
+        <Geo
+          ref={(node) => { this.geo = node; }}
+        />
+        <SubContainer
+          ref={(node) => { this.subContainer = node; }}
         >
-          <Header>{`日期：${dateString}`}</Header>
-          <Geo
-            ref={(node) => { this.geo = node; }}
+          <GeoSAR
+            ref={(node) => { this.geoSAR = node; }}
           />
-          <SubContainer
-            ref={(node) => { this.subContainer = node; }}
-          >
-            <GeoSAR
-              ref={(node) => { this.geoSAR = node; }}
-            />
-          </SubContainer>
-          <Slider
-            updateData={this.updateData}
-            totalSteps={sortedTimetamps.length}
-            startLabel={this.startDate}
-            endLabel={this.endDate}
-          />
-          <ToolTip
-            ref={(node) => { this.tooltip = node; }}
-          />
-        </Container>
-      </div>
+        </SubContainer>
+        <Slider
+          updateData={this.updateData}
+          totalSteps={sortedTimetamps.length}
+          startLabel={this.startDate}
+          endLabel={this.endDate}
+        />
+        <ToolTip
+          ref={(node) => { this.tooltip = node; }}
+        />
+      </Container>
     );
   }
 }
-
-
 
 export default ChinaChronological;
