@@ -1,0 +1,17 @@
+# modules
+node_modules/
+
+# source files
+.eslintrc
+.gitignore
+.npmignore
+README.md
+.babelrc
+.DS_Store
+webpack.config.development.js
+webpack.config.production.js
+
+# source folders
+.git/
+public/
+src/
