@@ -290,7 +290,7 @@ class ChinaChronological extends Component {
     const { step } = this.state;
     const clientWidth = this.macauContainer.clientWidth;
     const clientHeight = clientWidth * mapRatioHongKong;
-    this.macauContainer.style.height = clientHeight + (clientHeight * 0.3);
+    this.macauContainer.style.height = `${clientHeight + (clientHeight * 0.3)}px`;
     const projection = d3
       .geoMercator()
       .scale(clientWidth * scaleRatioMacau)
@@ -364,7 +364,7 @@ class ChinaChronological extends Component {
     const { step } = this.state;
     const clientWidth = this.hongKongContainer.clientWidth;
     const clientHeight = clientWidth * mapRatioHongKong;
-    this.hongKongContainer.style.height = clientHeight + (clientHeight * 0.3);
+    this.hongKongContainer.style.height = `${clientHeight + (clientHeight * 0.3)}px`;
     const projection = d3
       .geoMercator()
       .scale(clientWidth * scaleRatioHongKong)
