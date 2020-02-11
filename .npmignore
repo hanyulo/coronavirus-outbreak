@@ -16,3 +16,4 @@ webpack.config.public.production.js
 .git/
 public/
 src/
+published_dist/
