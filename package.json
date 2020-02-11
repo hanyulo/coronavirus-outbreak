@@ -52,7 +52,7 @@
     "fetchdata": "node ./src/utils/fetchSpreadSheet",
     "build": "webpack --config webpack.config.production.js",
     "build:page": "webpack --config webpack.config.public.production.js",
-    "deploy": "npm run build:page && gh-pages -d dist"
+    "deploy": "npm run build:page && gh-pages -d published_dist"
   },
   "repository": {
     "type": "git",
