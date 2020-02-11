@@ -28,6 +28,10 @@ const Thumb = styled.div.attrs(props => ({
   width: 11px;
   background-color: #3f9eff;
   transform: translate(-50%, -50%);
+  @media (max-width: 767px) {
+    height: 25px;
+    width: 14px;
+  }
 `;
 
 const StartDate = styled.div`
