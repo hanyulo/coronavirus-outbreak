@@ -15,7 +15,7 @@ const width = 700;
 const mapRatio = 0.58;
 const height = width * mapRatio;
 const scaleRatio = 0.71;
-const DEFAULT_MAP_COLOE = '#C8C8C8';
+const DEFAULT_MAP_COLOR = '#DADADA';
 const BORDER_COLOR = '#333';
 const centerChinaLongtitude = 104.4898;
 const centerChinaLatitude = 37.5854;
@@ -150,13 +150,13 @@ const ColorIcon = styled.div`
 `;
 
 const stageColorMap = {
-  0: DEFAULT_MAP_COLOE,
+  0: DEFAULT_MAP_COLOR,
   1: '#F5C6E9',
-  2: '#D196BC',
-  3: '#BE659B',
-  4: '#813B7C',
-  5: '#451258',
-  6: '#2B014B',
+  2: '#D493BC',
+  3: '#BC659A',
+  4: '#803D79',
+  5: '#451458',
+  6: '#270048',
 };
 
 const getInfectedStageFromCount = (count) => {
@@ -316,7 +316,7 @@ class ChinaChronological extends Component {
       .attr('fill', function(d) {
         const color = colorProcessor(d);
         return color;
-        // return DEFAULT_MAP_COLOE;
+        // return DEFAULT_MAP_COLOR;
       })
       .attr('stroke', BORDER_COLOR)
       .attr('stroke-width', 0.5)
@@ -390,7 +390,7 @@ class ChinaChronological extends Component {
       .attr('fill', function(d) {
         const color = colorProcessor(d);
         return color;
-        // return DEFAULT_MAP_COLOE;
+        // return DEFAULT_MAP_COLOR;
       })
       .attr('stroke', BORDER_COLOR)
       .attr('stroke-width', 0.5)
