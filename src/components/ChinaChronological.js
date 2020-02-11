@@ -502,7 +502,9 @@ class ChinaChronological extends Component {
   _renderLegend() {
     const Legends = mapLegends.map((label, index) => {
       return (
-        <Legend>
+        <Legend
+          key={`${index}_${label}`}
+        >
           <ColorIcon
             backgrounColor={stageColorMap[index]}
           />
