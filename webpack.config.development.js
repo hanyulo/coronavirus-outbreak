@@ -16,7 +16,7 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dev-dist'),
-    port: 3000
+    port: 3000,
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -25,12 +25,6 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, 'public/assets'),
-        to: path.resolve(__dirname, 'dev-dist/assets'),
-      },
-    ]),
   ],
   output: {
     filename: '[name].bundle.js',
