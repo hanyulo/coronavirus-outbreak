@@ -10,6 +10,7 @@ README.md
 .DS_Store
 webpack.config.development.js
 webpack.config.production.js
+webpack.config.public.production.js
 
 # source folders
 .git/
