@@ -19,6 +19,12 @@ data visualization for coronavirus outbreak in China
 
 
 ## How to use it
+* `npm install coronavirus-outbreak`
+* version 1.0.3
+    * `import [whatever you want] from 'coronavirus-outbreak'`
+* version ^1.0.4
+    * `import { ChinaProvince, ChinaPrefectural } from 'coronavirus-outbreak'  `
+
 
 ### Development
 * port number: 3000
