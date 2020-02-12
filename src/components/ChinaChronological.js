@@ -334,11 +334,11 @@ class ChinaChronological extends Component {
         `);
       })
       .on('mousemove', (d) => {
-        let positionX = d3.event.pageX + 10;
-        const positionY = d3.event.pageY;
+        let positionX = d3.event.clientX + 10;
+        const positionY = d3.event.clientY;
         const tooltipRect = tooltipTrack.getBoundingClientRect();
         if ((positionX + tooltipRect.width) > window.innerWidth) {
-          positionX = d3.event.pageX - tooltipRect.width - 10;
+          positionX = d3.event.clientX - tooltipRect.width - 10;
         }
         tooltip
           .style('top', `${positionY}px`)
@@ -408,11 +408,11 @@ class ChinaChronological extends Component {
         `);
       })
       .on('mousemove', (d) => {
-        let positionX = d3.event.pageX + 10;
-        const positionY = d3.event.pageY;
+        let positionX = d3.event.clientX + 10;
+        const positionY = d3.event.clientY;
         const tooltipRect = tooltipTrack.getBoundingClientRect();
         if ((positionX + tooltipRect.width) > window.innerWidth) {
-          positionX = d3.event.pageX - tooltipRect.width - 10;
+          positionX = d3.event.clientX - tooltipRect.width - 10;
         }
         tooltip
           .style('top', `${positionY}px`)
@@ -480,8 +480,8 @@ class ChinaChronological extends Component {
       })
       .on('mousemove', (d) => {
         tooltip
-          .style('top', `${d3.event.pageY}px`)
-          .style('left', `${d3.event.pageX + 10}px`)
+          .style('top', `${d3.event.clientY}px`)
+          .style('left', `${d3.event.clientX + 10}px`)
           .html(`
             <div>
               ${truncateSimplifiedMandarine(d.properties.name_local)}
