@@ -214,7 +214,7 @@ class ChinaChronological extends Component {
   componentDidMount() {
     if (this.geo) {
       // TODO: need to remove such listener
-      d3.select(window).on('resize', () => {
+      d3.select(window).on(`resize.${ChinaChronological.name}`, () => {
         this._cleanCanvas();
         this._drawChina();
         this._drawHongKong();
