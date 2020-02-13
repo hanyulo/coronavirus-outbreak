@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
-import * as topojson from 'topojson';
-import china from '../data/china-provinces.json';
+import provinces from '../data/china-provinces.json';
+// import { fetchPrefecturalCity } from '../utils/api';
+import prefectures from '../data/china-prefectural-cities/congregated-data-geo.json';
+import testCity from '../data/china-prefectural-cities/210000.json';
 
 const width = 700;
 const mapRatio = 0.58;
@@ -56,28 +58,79 @@ class PrefecturalChina extends Component {
       .remove();
   }
 
-  _onClickProvince(d, map, path) {
+  _zoomOut(d3SelectedMap) {
+    const x = 0;
+    const y = 0;
+    const scaleValue = 1;
+    d3SelectedMap.transition()
+      .duration(750)
+      .attr('transform', `scale(${scaleValue}) translate(${x}, ${y})`);
+  }
+
+  _zoomIn(d, d3SelectedMap, path) {
     let x = 0;
     let y = 0;
     let scaleValue = 1;
-    if (!d || this.centered === d) {
-      this.centered = null;
-    } else {
-      // const centroid = path.centroid(d);
-      this.centered = d;
-      const bounds = path.bounds(d);
-      const centroidX = (bounds[0][0] + bounds[1][0]) / 2;
-      const centroidY = (bounds[0][1] + bounds[1][1]) / 2;
-      const dx = bounds[1][0] - bounds[0][0];
-      const dy = bounds[1][1] - bounds[0][1];
-      const { clientWidth, clientHeight } = this.map;
-      x = clientWidth / 2 - centroidX;
-      y = clientHeight / 2 - centroidY;
-      scaleValue = Math.min(clientWidth / dx, clientHeight / dy) * 0.95;
-    }
-    map.transition()
+    const bounds = path.bounds(d);
+    const centroidX = (bounds[0][0] + bounds[1][0]) / 2;
+    const centroidY = (bounds[0][1] + bounds[1][1]) / 2;
+    const dx = bounds[1][0] - bounds[0][0];
+    const dy = bounds[1][1] - bounds[0][1];
+    const { clientWidth, clientHeight } = this.map;
+    x = clientWidth / 2 - centroidX;
+    y = clientHeight / 2 - centroidY;
+    scaleValue = Math.min(clientWidth / dx, clientHeight / dy) * 0.95;
+    d3SelectedMap.transition()
       .duration(750)
       .attr('transform', `scale(${scaleValue}) translate(${x}, ${y})`);
+  }
+
+  _cleanOutPrefectures(d, d3SelectedMap) {
+    d3SelectedMap
+      .selectAll('path.prefecture')
+      .filter((prefecture) => prefecture.properties.parent.adcode === this.centered.properties.adcode)
+      .style('display', 'none')
+      .attr('stroke-width', 0.1);
+
+    d3SelectedMap
+      .selectAll('path.province')
+      .filter((province) => province.properties.adcode === this.centered.properties.adcode)
+      .attr('stroke-width', 0.1);
+  }
+
+  _onClickPrefecture(d, d3SelectedMap) {
+    this._cleanOutPrefectures(d, d3SelectedMap);
+    this._zoomOut(d3SelectedMap);
+    this.centered = null;
+  }
+
+  _onClickProvince(d, d3SelectedMap, path) {
+    if (!d || this.centered === d) {
+      this.centered = null;
+      this._zoomOut(d3SelectedMap);
+      d3SelectedMap
+        .selectAll('path.prefecture')
+        .style('display', 'none');
+    } else {
+      // const centroid = path.centroid(d);
+      if (this.centered) {
+        this._cleanOutPrefectures(d, d3SelectedMap);
+      }
+      // const thePrefecturalCity = prefecturalCities[this.centered.properties.adcode];
+      d3SelectedMap
+        .selectAll('path.prefecture')
+        .filter((prefecture) => prefecture.properties.parent.adcode === d.properties.adcode)
+        .style('display', 'block')
+        .attr('stroke-width', 0.3);
+
+      d3SelectedMap
+        .selectAll('path.province')
+        .filter((province) => province.properties.adcode === d.properties.adcode)
+        .attr('stroke-width', 0.3);
+
+      this.centered = d;
+      this._zoomIn(d, d3SelectedMap, path);
+    }
   }
 
   _drawChina() {
@@ -94,17 +147,38 @@ class PrefecturalChina extends Component {
 
     const path = d3.geoPath(projection);
     const map = d3.select(this.map);
+
+    const isProvince = (d) => d.properties.level === 'province';
+
     map
       .selectAll('path')
-      .data(china.features)
+      .data([...provinces.features, ...prefectures.features])
       .enter()
       .append('path')
       .attr('d', path)
-      .attr('fill', DEFAULT_MAP_COLOR)
+      .attr('class', (d) => {
+        if (isProvince(d)) {
+          return 'province';
+        }
+        return 'prefecture';
+      })
+      .attr('data-adcode', (d) => d.properties.adcode)
+      .attr('data-parent-adcode', (d) => d.properties.parent.adcode)
+      .style('display', (d) => {
+        if (isProvince(d)) {
+          return 'block';
+        }
+        return 'none';
+      })
       .attr('stroke', BORDER_COLOR)
+      .attr('fill', DEFAULT_MAP_COLOR)
       .attr('stroke-width', 0.1)
       .on('click', (d) => {
-        this._onClickProvince(d, map, path);
+        if (isProvince(d)) {
+          this._onClickProvince(d, map, path);
+        } else {
+          this._onClickPrefecture(d, map)
+        }
       });
   }
 
