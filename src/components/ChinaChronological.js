@@ -6,7 +6,7 @@ import china from '../data/zh-mainland-provinces.json';
 import hongKong from '../data/hong-kong.json';
 import macau from '../data/macau.json';
 import Slider from './Slider';
-import { formatNumber } from '../utils';
+import { formatNumber, throttle } from '../utils';
 
 
 const mapLegends = ['0', '1 - 10', '11 - 20', '21 - 100', '100 +', '1000 +', '10,000 +'];
@@ -219,6 +219,7 @@ class ChinaChronological extends Component {
     this.getConfirmedCount = this._getConfirmedCount.bind(this);
     this.updateData = this._updateData.bind(this);
     this.drawChina = this._drawChina.bind(this);
+    this.cleantToolTip = throttle(this._cleantToolTip.bind(this), 300);
     this.canvasContainer = null;
     this.hongKongContainer = null;
     this.macauContainer = null;
@@ -237,6 +238,7 @@ class ChinaChronological extends Component {
       this._drawChina();
       this._drawMacau();
     }
+    document.addEventListener('scroll', this.cleantToolTip);
   }
 
   componentDidUpdate() {
@@ -244,6 +246,16 @@ class ChinaChronological extends Component {
       this._drawChina();
       this._drawHongKong();
       this._drawMacau();
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.cleantToolTip);
+  }
+
+  _cleantToolTip() {
+    if (this.tooltip.style.display !== 'none') {
+      this.tooltip.style.display = 'none';
     }
   }
 
