@@ -7,7 +7,8 @@ import PrefecturalChina from './components/PrefecturalChina';
 
 const Container = styled.div`
   padding: 40px;
-`
+  background-color: #f2f2f2;
+`;
 
 const Header = styled.h1`
   margin-bottom: 20px;
