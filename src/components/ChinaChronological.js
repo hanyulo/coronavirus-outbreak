@@ -34,6 +34,10 @@ const mobileBreakPoint = '600px';
 const Container = styled.div`
   max-width: ${width}px;
   margin: 0 auto;
+`;
+
+const CanvasContainer = styled.div`
+  max-width: ${width}px;
   box-sizing: content-box;
   position: relative;
 `;
@@ -43,12 +47,11 @@ const HongContainer = styled.div`
   box-sizing: content-box;
   position: absolute;
   right: 6%;
-  bottom: 31%;
+  bottom: 33%;
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
   @media (max-width: ${mobileBreakPoint}) {
-    bottom: 28%;
     right: 8%;
   }
 `;
@@ -58,12 +61,12 @@ const MacauContainer = styled.div`
   box-sizing: content-box;
   position: absolute;
   right: 6%;
-  bottom: 10%;
+  bottom: 5%;
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
   @media (max-width: ${mobileBreakPoint}) {
-    bottom: 12%;
+    bottom: 8%;
     right: 8%;
   }
 `;
@@ -121,16 +124,22 @@ const ToolTip = styled.div`
 `;
 
 const Header = styled.div`
-  color: #333;
-  font-weight: 600;
-  font-size: 26px;
+  color: #4E4E4E;
+  font-weight: 500;
+  font-size: 24px;
 `;
 
 const NumericMapLegend = styled.div`
   display: grid;
-  max-width: 70%;
+  max-width: 50%;
   grid-template-columns: auto auto auto auto;
   margin: 20px 0 0 0;
+  @media (max-width: 767px) {
+    max-width: 60%;
+  }
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
 `;
 
 const Legend = styled.div`
@@ -138,15 +147,19 @@ const Legend = styled.div`
   padding: 5px 0 5px 0;
   display: flex;
   align-items: center;
+  font-size: 12px;
 `;
 
 const ColorIcon = styled.div`
-  width: 15px;
-  height: 15px;
-  border: 1px solid white;
+  width: 14px;
+  height: 14px;
   background-color: ${props => props.backgrounColor || 'white'};
-  border-radius: 3px;
-  margin-right: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+`;
+
+const SliderWrapper = styled.div`
+  margin-top: 18px;
 `;
 
 const stageColorMap = {
@@ -206,7 +219,7 @@ class ChinaChronological extends Component {
     this.getConfirmedCount = this._getConfirmedCount.bind(this);
     this.updateData = this._updateData.bind(this);
     this.drawChina = this._drawChina.bind(this);
-    this.container = null;
+    this.canvasContainer = null;
     this.hongKongContainer = null;
     this.macauContainer = null;
   }
@@ -436,7 +449,7 @@ class ChinaChronological extends Component {
 
   _drawChina() {
     const { step } = this.state;
-    const clientWidth = this.container.clientWidth;
+    const clientWidth = this.canvasContainer.clientWidth;
     const clientHeight = clientWidth * mapRatio;
     this.geo.style.height = clientHeight;
     const projection = d3
@@ -525,39 +538,43 @@ class ChinaChronological extends Component {
     const sortedTimetamps = Object.keys(data);
     const [month, day] = dateString.split('/');
     return (
-      <Container
-        ref={(node) => { this.container = node; }}
-      >
-        <Header>{`${month}月${day}日確診人數`}</Header>
+      <Container>
         {this._renderLegend()}
-        <Geo
-          ref={(node) => { this.geo = node; }}
-        />
-        <HongContainer
-          ref={(node) => { this.hongKongContainer = node; }}
+        <CanvasContainer
+          ref={(node) => { this.canvasContainer = node; }}
         >
-          <GeoHongKong
-            ref={(node) => { this.geoHongKong = node; }}
+          <Geo
+            ref={(node) => { this.geo = node; }}
           />
-          <LocationLabel>香港</LocationLabel>
-        </HongContainer>
-        <MacauContainer
-          ref={(node) => { this.macauContainer = node; }}
-        >
-          <GeoMacau
-            ref={(node) => { this.geoMacau = node; }}
+          <HongContainer
+            ref={(node) => { this.hongKongContainer = node; }}
+          >
+            <GeoHongKong
+              ref={(node) => { this.geoHongKong = node; }}
+            />
+            <LocationLabel>香港</LocationLabel>
+          </HongContainer>
+          <MacauContainer
+            ref={(node) => { this.macauContainer = node; }}
+          >
+            <GeoMacau
+              ref={(node) => { this.geoMacau = node; }}
+            />
+            <LocationLabel>澳門</LocationLabel>
+          </MacauContainer>
+          <ToolTip
+            ref={(node) => { this.tooltip = node; }}
           />
-          <LocationLabel>澳門</LocationLabel>
-        </MacauContainer>
-        <Slider
-          updateData={this.updateData}
-          totalSteps={sortedTimetamps.length}
-          startLabel={this.startDate}
-          endLabel={this.endDate}
-        />
-        <ToolTip
-          ref={(node) => { this.tooltip = node; }}
-        />
+        </CanvasContainer>
+        <Header>{`${month}月${day}日`}</Header>
+        <SliderWrapper>
+          <Slider
+            updateData={this.updateData}
+            totalSteps={sortedTimetamps.length}
+            startLabel={this.startDate}
+            endLabel={this.endDate}
+          />
+        </SliderWrapper>
       </Container>
     );
   }

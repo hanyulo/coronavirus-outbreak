@@ -3,17 +3,16 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
+
 `;
 
 const Bar = styled.div`
   height: 13px;
-  background: #eee;
+  background: white;
   border-radius: 5px;
   position: relative;
   flex-grow: 1;
-  margin: 0 15px;
+  margin-bottom: 14px;
 `;
 
 const Thumb = styled.div.attrs(props => ({
@@ -26,12 +25,17 @@ const Thumb = styled.div.attrs(props => ({
   border-radius: 5px;
   height: 20px;
   width: 11px;
-  background-color: #3f9eff;
+  background-color: #A0A0A0;
   transform: translate(-50%, -50%);
   @media (max-width: 767px) {
     height: 25px;
     width: 14px;
   }
+`;
+
+const LabelRow = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StartDate = styled.div`
@@ -123,9 +127,6 @@ class Slider extends Component {
     const { xPosition } = this.state;
     return (
       <Container>
-        <StartDate>
-          {startLabel}
-        </StartDate>
         <Bar
           type="range"
           ref={node => { this.bar = node; }}
@@ -137,9 +138,14 @@ class Slider extends Component {
             ref={node => { this.thumb = node; }}
           />
         </Bar>
-        <EndDate>
-          {endLabel}
-        </EndDate>
+        <LabelRow>
+          <StartDate>
+            {startLabel}
+          </StartDate>
+          <EndDate>
+            {endLabel}
+          </EndDate>
+        </LabelRow>
       </Container>
     );
   }
