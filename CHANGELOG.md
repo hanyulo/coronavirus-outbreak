@@ -1,3 +1,8 @@
+## 2.0.0
+* two different maps
+    1. ChinaChronological
+    2. PrefecturalChina
+
 ## 1.0.4
 * fix position of hover-panel for ChinaChronological
 
