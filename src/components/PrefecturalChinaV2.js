@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
 import provinces from '../data/china-provinces.json';
 // import { fetchPrefecturalCity } from '../utils/api';
 import prefectures from '../data/china-prefectural-cities/congregated-data-geo.json';
 import { formatNumber } from '../utils';
-import Slider from './Slider';
+// import Slider from './Slider';
 
 const width = 700;
 const mapRatio = 0.58;
@@ -17,8 +17,8 @@ const DEFAULT_MAP_COLOR = '#DADADA';
 // const BORDER_COLOR = '#333';
 
 const strokeWidth = {
-  default: 0.2,
-  focus: 0.4,
+  default: 0.1,
+  focus: 0.2,
   howverFocus: 0.4,
 };
 
@@ -64,21 +64,31 @@ const ToolTip = styled.div`
 `;
 
 const generateTooltipContent = ({ name, adcode, data }) => {
+  const emptyString = '目前尚無數據';
+  if (!data) {
+    return `
+      <div>
+        <div>${name}</div>
+        <div>${emptyString}</div>
+      </div>
+    `;
+  }
   const entity = data[adcode];
-  const emptyString = '無數據';
   if (!entity) {
     // console.log('has no data for the area - adcode ', adcode);
     return `
       <div>
-        目前尚無數據
+        <div>${name}</div>
+        <div>${emptyString}</div>
       </div>
     `;
   }
   const {
-    confirmed,
-    suspected,
-    cured,
-    dead,
+    confirmedCount,
+    currentConfirmedCount,
+    suspectedCount,
+    curedCount,
+    deadCount,
   } = entity;
   return `
     <div>
@@ -86,16 +96,19 @@ const generateTooltipContent = ({ name, adcode, data }) => {
         ${name}
       </div>
       <div>
-        確診：${formatNumber(confirmed)}
+        確診：${formatNumber(confirmedCount)}
       </div>
       <div>
-        疑似病例：${formatNumber(suspected)}
+        當前確診：${formatNumber(currentConfirmedCount)}
       </div>
       <div>
-        康復：${formatNumber(cured)}
+        疑似病例：${formatNumber(suspectedCount)}
       </div>
       <div>
-        死亡：${formatNumber(dead)}
+        康復：${formatNumber(curedCount)}
+      </div>
+      <div>
+        死亡：${formatNumber(deadCount)}
       </div>
     </div>
   `;
@@ -137,15 +150,15 @@ const getInfectedStageFromCount = (count) => {
 };
 
 
-class PrefecturalChina extends Component {
+class PrefecturalChina extends PureComponent {
   constructor(props) {
     super(props);
-    const { data } = props;
-    this.dataKeys = Object.keys(data);
     this.state = {
-      legendStage: this.dataKeys.length - 1,
+      legendStage: 74,
     };
+    const { data } = props;
     // sortedTimestamps;
+    // this.dataKeys = Object.keys(data);
     this.map = null;
     this.canvasContainer = null;
     this.centered = null;
@@ -162,10 +175,13 @@ class PrefecturalChina extends Component {
     this._drawChina();
   }
 
+  componentDidUpdate() {
+    this._cleanCanvas();
+    this._drawChina();
+  }
+
   _updateLegendStage(legendStage) {
     const { data } = this.props;
-    // const currentTimestamp = this.dataKeys[legendStage];
-    // const { dateString } = data[currentTimestamp];
     this.setState({
       legendStage,
     }, () => {
@@ -288,23 +304,25 @@ class PrefecturalChina extends Component {
   }
 
   _colorProcessor(d, isProvince) {
-    const { legendStage } = this.state;
+    // const { legendStage } = this.state;
     const { data } = this.props;
-    const currentTimestamp = this.dataKeys[legendStage];
+    if (!data) {
+      return stageColorMap[0];
+    }
+    // const currentTimestamp = this.dataKeys[legendStage];
     const { adcode } = d.properties;
-    const { data: extractedData } = data[currentTimestamp]
-    const entities = isProvince ? extractedData.provinces : extractedData.cities;
+    const entities = isProvince ? data.provinces : data.cities;
     if (!entities[adcode]) {
       // console.log('adcode: ', adcode)
     }
-    const stage = getInfectedStageFromCount((entities[adcode] && entities[adcode].confirmed) || 0);
+    const stage = getInfectedStageFromCount((entities[adcode] && entities[adcode].confirmedCount) || 0);
     return stageColorMap[stage];
   }
 
   _drawChina() {
     const { clientWidth } = this.canvasContainer;
     const { data } = this.props;
-    const { legendStage } = this.state;
+    // const { legendStage } = this.state;
     const clientHeight = clientWidth * mapRatio;
     this.canvasContainer.style.height = `${clientHeight + 20}px`;
     this.map.style.height = `${clientHeight}px`;
@@ -322,10 +340,15 @@ class PrefecturalChina extends Component {
     const d3SelectedTooltip = d3.select(this.tooltip);
 
     const _getTransitionStatus = this._getTransitionStatus.bind(this);
-    const _dataKeys = this.dataKeys;
-    // const _colorProcessor = this._colorProcessor;
+    // const _dataKeys = this.dataKeys;
 
-// [...provinces.features, ...prefectures.features]
+    const getTooltipData = (d, data) => {
+      if (!data) {
+        return null;
+      }
+      return isProvince(d) ? data.provinces : data.cities;
+    };
+
     map
       .selectAll('path')
       .data([...provinces.features, ...prefectures.features])
@@ -364,7 +387,7 @@ class PrefecturalChina extends Component {
           .html(generateTooltipContent({
             name: d.properties.name,
             adcode: d.properties.adcode,
-            data: isProvince(d) ? data[_dataKeys[legendStage]].data.provinces : data[_dataKeys[legendStage]].data.cities,
+            data: getTooltipData(d, data),
           }));
       })
       .on('mousemove', (d) => {
@@ -380,7 +403,7 @@ class PrefecturalChina extends Component {
           .html(generateTooltipContent({
             name: d.properties.name,
             adcode: d.properties.adcode,
-            data: isProvince(d) ? data[_dataKeys[legendStage]].data.provinces : data[_dataKeys[legendStage]].data.cities,
+            data: getTooltipData(d, data),
           }));
       })
       .on('mouseout', function () {
@@ -395,10 +418,13 @@ class PrefecturalChina extends Component {
 
   render() {
     const { data } = this.props;
-    const { legendStage } = this.state;
+    // const { legendStage } = this.state;
+    const dateObject = data ? new Date(data.latestUpdatedTimeStamp) : null;
+    const dateString = dateObject ? `${dateObject.getFullYear()}/${dateObject.getMonth() + 1}/${dateObject.getDate()}` : '';
     return (
       <Container>
-        <div>{data[this.dataKeys[legendStage]].dateString}</div>
+        {/*<div>{data[this.dataKeys[legendStage]].dateString}</div>*/}
+        <div>{dateString}</div>
         <CanvasContainer
           ref={node => { this.canvasContainer = node; }}
         >

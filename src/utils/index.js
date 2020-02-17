@@ -1,5 +1,9 @@
 function formatNumber(num) {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  try {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  } catch (e) {
+    return 0;
+  }
 }
 
 function throttle(fn, interval) {
