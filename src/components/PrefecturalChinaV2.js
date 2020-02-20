@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
-import provinces from '../data/china-provinces.json';
-import prefectures from '../data/china-prefectural-cities/congregated-data-geo.json';
+import provinces from '../data/china-provinces-tranditional.json';
+import prefectures from '../data/china-prefectural-cities/congregated-data-geo-tranditional.json';
 import { formatNumber } from '../utils';
 // import InfoIcon from '../assets/map_legend_info_icon.svg';
 import ZoomResetIcon from '../assets/zoom_reset_icon.svg';
@@ -427,18 +427,20 @@ class PrefecturalChinaV2 extends PureComponent {
   }
 
   _cleanOutPrefectures(d3SelectedMap) {
-    d3SelectedMap
-      .selectAll('path.prefecture')
-      .filter((prefecture) => prefecture.properties.parent.adcode === this.centered.properties.adcode)
-      .style('display', 'none')
-      .attr('stroke-width', strokeWidth.default)
-      .attr('stroke', strokeColor.default);
+    if (this.centered) {
+      d3SelectedMap
+        .selectAll('path.prefecture')
+        .filter((prefecture) => prefecture.properties.parent.adcode === this.centered.properties.adcode)
+        .style('display', 'none')
+        .attr('stroke-width', strokeWidth.default)
+        .attr('stroke', strokeColor.default);
 
-    d3SelectedMap
-      .selectAll('path.province')
-      .filter((province) => province.properties.adcode === this.centered.properties.adcode)
-      .attr('stroke-width', strokeWidth.default)
-      .attr('stroke', strokeColor.default);
+      d3SelectedMap
+        .selectAll('path.province')
+        .filter((province) => province.properties.adcode === this.centered.properties.adcode)
+        .attr('stroke-width', strokeWidth.default)
+        .attr('stroke', strokeColor.default);
+    }
   }
 
   _onClickPrefecture(d, d3SelectedMap) {
