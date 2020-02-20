@@ -1,3 +1,10 @@
+## 3.0.0
+* single china map with following features
+    1. prefectural level
+    2. auto-zoom
+    3. manual-zoom
+    4. latest coronavirus-outbreak data in china
+
 ## 2.0.0
 * two different maps
     1. ChinaChronological
