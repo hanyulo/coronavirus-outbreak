@@ -10,7 +10,7 @@ import API from './utils/api';
 import { extractData } from './utils/blankerl';
 
 const Container = styled.div`
-  padding: 40px;
+  padding: 20px;
   background-color: #f2f2f2;
 `;
 
@@ -20,6 +20,11 @@ const Header = styled.h1`
 
 const Section = styled.div`
   margin: 50px 0;
+`;
+
+const MapContainer = styled.div`
+  max-width: 1024px;
+  margin: 0 auto;
 `;
 
 class App extends React.Component {
@@ -43,14 +48,16 @@ class App extends React.Component {
     const { coronavirusDataPrefecturalLevel } = this.state;
     return (
       <Container>
-        <Header>Map Demo</Header>
+        <Header>Map Demo 2</Header>
         <Section>
           <div>資料來源：丁香醫生</div>
-          <PrefecturalChinaV2
-            data={coronavirusDataPrefecturalLevel}
-          />
+          <MapContainer>
+            <PrefecturalChinaV2
+              data={coronavirusDataPrefecturalLevel}
+            />
+          </MapContainer>
         </Section>
-        <Section>
+        {/*<Section>
           <div>資料來源：每日頭條（github.com/canghailan）</div>
           <PrefecturalChina
             data={coronavirus}
@@ -60,7 +67,7 @@ class App extends React.Component {
           <ChinaChronological
             data={testData}
           />
-        </Section>
+      </Section>*/}
       </Container>
     );
   }
