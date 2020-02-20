@@ -22,8 +22,10 @@ data visualization for coronavirus outbreak in China
 * `npm install coronavirus-outbreak`
 * version 1.0.3
     * `import [whatever you want] from 'coronavirus-outbreak'`
-* version ^1.0.4
-    * `import { ChinaProvince, ChinaPrefectural } from 'coronavirus-outbreak'  `
+* version 2.0.0
+    * `import { ChinaProvince, ChinaPrefectural } from 'coronavirus-outbreak'`
+* version 3.0.0
+    * `import [whatever you want] from 'coronavirus-outbreak'`
 
 
 ### Development
