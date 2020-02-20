@@ -2,23 +2,26 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
 import provinces from '../data/china-provinces.json';
-// import { fetchPrefecturalCity } from '../utils/api';
 import prefectures from '../data/china-prefectural-cities/congregated-data-geo.json';
 import { formatNumber } from '../utils';
-// import Slider from './Slider';
+import InfoIcon from '../assets/map_legend_info_icon.svg';
+import Modal from './Modal';
 
-const width = 700;
-const mapRatio = 0.58;
-const scaleRatio = 0.71;
+
+const width = 650;
+const mapRatio = 0.72;
+const scaleRatio = 0.88;
 const height = width * mapRatio;
 const centerChinaLongtitude = 104.4898;
 const centerChinaLatitude = 37.5854;
 const DEFAULT_MAP_COLOR = '#DADADA';
-// const BORDER_COLOR = '#333';
+
+const mapLegends = ['0', '1 - 50', '51 - 100', '100 +', '1000 +', '5,000 +', '10,000 +'];
+
 
 const strokeWidth = {
-  default: 0.1,
-  focus: 0.2,
+  default: 0.2,
+  focus: 0.4,
   howverFocus: 0.4,
 };
 
@@ -29,20 +32,23 @@ const strokeColor = {
 
 const Container = styled.div`
   margin: 0 auto;
-  max-width: ${width}px;
   width: 100%;
 `;
 
+
 const CanvasContainer = styled.div`
   max-width: ${width}px;
-  box-sizing: content-box;
-  position: relative;
+  box-sizing: border-box;
   border: 1px solid black;
+  margin: 20px auto;
+  position: relative;
+`;
+
+const SubCanvasContainer = styled.div`
+  width: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
-  margin: 20px 0;
-  background-color: #EEEEEE;
 `;
 
 const Map = styled.svg`
@@ -62,6 +68,37 @@ const ToolTip = styled.div`
   display: none;
   z-index: 999;
 `;
+
+const LegendContainer = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border: 1px solid blue;
+  transform: translateX(-100%);
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+`;
+
+const ColorIcon = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: ${props => props.backgrounColor || 'white'};
+  border-radius: 50%;
+  margin-right: 5px;
+`;
+
+const Legend = styled.div`
+  white-space: nowrap;
+  padding: 5px 0 5px 0;
+  display: flex;
+  align-items: center;
+`;
+
+const InfoIconContainer = styled.div`
+  margin: 8px 0 7px 0;
+`;
+
 
 const generateTooltipContent = ({ name, adcode, data }) => {
   const emptyString = '目前尚無數據';
@@ -128,19 +165,19 @@ const getInfectedStageFromCount = (count) => {
   if (count === 0) {
     return 0;
   }
-  if (count >= 1 && count <= 10) {
+  if (count >= 1 && count <= 50) {
     return 1;
   }
-  if (count >= 11 && count <= 20) {
+  if (count >= 51 && count <= 100) {
     return 2;
   }
-  if (count >= 21 && count <= 100) {
+  if (count >= 101 && count <= 1000) {
     return 3;
   }
-  if (count >= 101 && count <= 1000) {
+  if (count >= 1001 && count <= 5000) {
     return 4;
   }
-  if (count >= 1001 && count <= 10000) {
+  if (count >= 5001 && count <= 10000) {
     return 5;
   }
   if (count >= 10001 && count <= 100000) {
@@ -150,25 +187,27 @@ const getInfectedStageFromCount = (count) => {
 };
 
 
-class PrefecturalChina extends PureComponent {
+class PrefecturalChinaV2 extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      legendStage: 74,
+      test: null,
     };
     const { data } = props;
-    // sortedTimestamps;
-    // this.dataKeys = Object.keys(data);
     this.map = null;
     this.canvasContainer = null;
     this.centered = null;
     this.tooltip = null;
     this.isTransitioning = null;
     this.updateLegendStage = this._updateLegendStage.bind(this);
+    this.zoom = null;
+    this.hookUpZoomMap = null;
   }
 
   componentDidMount() {
-    d3.select(window).on(`resize.${PrefecturalChina.name}`, () => {
+    this._hookupZoom();
+
+    d3.select(window).on(`resize.${PrefecturalChinaV2.name}`, () => {
       this._cleanCanvas();
       this._drawChina();
     });
@@ -178,6 +217,67 @@ class PrefecturalChina extends PureComponent {
   componentDidUpdate() {
     this._cleanCanvas();
     this._drawChina();
+  }
+
+  _hookupZoom() {
+    const { clientWidth } = this.canvasContainer;
+    const scaleValue = clientWidth * scaleRatio;
+    const map = d3.select(this.map);
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on('zoom', () => { this._customizedZoom(map); });
+    map.call(zoom);
+    this.hookUpZoomMap = map;
+    this.zoom = zoom;
+  }
+
+  _customizedZoom(map) {
+    // const { k,x,y } = d3.event.transform;
+    map
+      .selectAll('path') // To prevent stroke width from scaling
+      .attr('transform', d3.event.transform);
+  }
+
+  _resetCustomizedZoom(d3SelectedMap) {
+    d3SelectedMap
+      .selectAll('path')
+      .transition()
+      .duration(750)
+      .attr('transform', `scale(${1}) translate(${0}, ${0})`)
+      .end()
+      .then(() => {
+        if (this.hookUpZoomMap && this.zoom) {
+          this.hookUpZoomMap.call(this.zoom.transform, d3.zoomIdentity);
+        }
+      })
+  }
+
+  _renderLegend() {
+    const { data } = this.props;
+    const dateObject = data ? new Date(data.latestUpdatedTimeStamp) : null;
+    const dateString = dateObject ? `${dateObject.getFullYear()}/${dateObject.getMonth() + 1}/${dateObject.getDate()}` : '';
+    const Legends = mapLegends.map((label, index) => {
+      return (
+        <Legend
+          key={`${index}_${label}`}
+        >
+          <ColorIcon
+            backgrounColor={stageColorMap[index]}
+          />
+          <span>{label}</span>
+        </Legend>
+      );
+    });
+    return (
+      <LegendContainer>
+        <div>確診人數</div>
+        {Legends}
+        {/*<InfoIconContainer>
+          <InfoIcon width={17} height={17} />
+        </InfoIconContainer>*/}
+        <div>更新時間：{dateString}</div>
+      </LegendContainer>
+    );
   }
 
   _updateLegendStage(legendStage) {
@@ -210,6 +310,9 @@ class PrefecturalChina extends PureComponent {
     const x = 0;
     const y = 0;
     const scaleValue = 1;
+
+    this._resetCustomizedZoom(d3SelectedMap);
+
     d3SelectedMap.transition()
       .duration(750)
       .attr('transform', `scale(${scaleValue}) translate(${x}, ${y})`)
@@ -230,6 +333,7 @@ class PrefecturalChina extends PureComponent {
     let y = 0;
     let scaleValue = 1;
     const bounds = path.bounds(d);
+    console.log('bounds: ', bounds)
     const centroidX = (bounds[0][0] + bounds[1][0]) / 2;
     const centroidY = (bounds[0][1] + bounds[1][1]) / 2;
     const dx = bounds[1][0] - bounds[0][0];
@@ -238,7 +342,11 @@ class PrefecturalChina extends PureComponent {
     x = clientWidth / 2 - centroidX;
     y = clientHeight / 2 - centroidY;
     scaleValue = Math.min(clientWidth / dx, clientHeight / dy) * 0.95;
-    d3SelectedMap.transition()
+
+    this._resetCustomizedZoom(d3SelectedMap);
+
+    d3SelectedMap
+      .transition()
       .duration(750)
       .attr('transform', `scale(${scaleValue}) translate(${x}, ${y})`)
       .end()
@@ -290,13 +398,11 @@ class PrefecturalChina extends PureComponent {
         .filter((prefecture) => prefecture.properties.parent.adcode === d.properties.adcode)
         .style('display', 'block')
         .attr('stroke-width', strokeWidth.focus)
-        .attr('stroke', strokeColor.focus);
 
       d3SelectedMap
         .selectAll('path.province')
         .filter((province) => province.properties.adcode === d.properties.adcode)
         .attr('stroke-width', strokeWidth.focus)
-        .attr('stroke', strokeColor.focus);
 
       this.centered = d;
       this._zoomIn(d, d3SelectedMap, path);
@@ -304,12 +410,10 @@ class PrefecturalChina extends PureComponent {
   }
 
   _colorProcessor(d, isProvince) {
-    // const { legendStage } = this.state;
     const { data } = this.props;
     if (!data) {
       return stageColorMap[0];
     }
-    // const currentTimestamp = this.dataKeys[legendStage];
     const { adcode } = d.properties;
     const entities = isProvince ? data.provinces : data.cities;
     if (!entities[adcode]) {
@@ -322,9 +426,8 @@ class PrefecturalChina extends PureComponent {
   _drawChina() {
     const { clientWidth } = this.canvasContainer;
     const { data } = this.props;
-    // const { legendStage } = this.state;
     const clientHeight = clientWidth * mapRatio;
-    this.canvasContainer.style.height = `${clientHeight + 20}px`;
+    this.canvasContainer.style.height = `${clientHeight}px`;
     this.map.style.height = `${clientHeight}px`;
     const scaleValue = clientWidth * scaleRatio;
     const projection = d3
@@ -340,7 +443,6 @@ class PrefecturalChina extends PureComponent {
     const d3SelectedTooltip = d3.select(this.tooltip);
 
     const _getTransitionStatus = this._getTransitionStatus.bind(this);
-    // const _dataKeys = this.dataKeys;
 
     const getTooltipData = (d, data) => {
       if (!data) {
@@ -417,34 +519,28 @@ class PrefecturalChina extends PureComponent {
   }
 
   render() {
-    const { data } = this.props;
-    // const { legendStage } = this.state;
-    const dateObject = data ? new Date(data.latestUpdatedTimeStamp) : null;
-    const dateString = dateObject ? `${dateObject.getFullYear()}/${dateObject.getMonth() + 1}/${dateObject.getDate()}` : '';
     return (
       <Container>
-        {/*<div>{data[this.dataKeys[legendStage]].dateString}</div>*/}
-        <div>{dateString}</div>
         <CanvasContainer
           ref={node => { this.canvasContainer = node; }}
         >
-          <Map
-            ref={node => { this.map = node; }}
-          />
+          <SubCanvasContainer>
+            <Map
+              ref={node => { this.map = node; }}
+            />
+          </SubCanvasContainer>
           <ToolTip
             ref={(node) => { this.tooltip = node; }}
           />
+          {this._renderLegend()}
         </CanvasContainer>
-        {/*<Slider
-          totalSteps={this.dataKeys.length}
-          updateData={this.updateLegendStage}
-          startLabel={data[this.dataKeys[0]].dateString}
-          endLabel={data[this.dataKeys[this.dataKeys.length - 1]].dateString}
-        />*/}
+        <Modal>
+          test
+        </Modal>
       </Container>
     );
   }
 }
 
 
-export default PrefecturalChina;
+export default PrefecturalChinaV2;
