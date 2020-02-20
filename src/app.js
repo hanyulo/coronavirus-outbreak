@@ -11,7 +11,6 @@ import { extractData } from './utils/blankerl';
 
 const Container = styled.div`
   padding: 20px;
-  background-color: #f2f2f2;
 `;
 
 const Header = styled.h1`
@@ -32,20 +31,28 @@ class App extends React.Component {
     super(props);
     this.state = {
       coronavirusDataPrefecturalLevel: null,
+      coronavirusCountryLevel: null,
     };
   }
 
   async componentDidMount() {
     const res = await API.fetchCoronavirusAreaData();
     // const data = filterOutNonChina(res.data.results);
+    const countryRes = await API.fetchChianOverallData();
+    const { confirmedCount, deadCount, curedCount } = countryRes;
     const data = extractData(res.data.results);
     this.setState({
       coronavirusDataPrefecturalLevel: data,
+      coronavirusCountryLevel: {
+        confirmedCount,
+        deadCount,
+        curedCount,
+      },
     });
   }
 
   render() {
-    const { coronavirusDataPrefecturalLevel } = this.state;
+    const { coronavirusDataPrefecturalLevel, coronavirusCountryLevel } = this.state;
     return (
       <Container>
         <Header>Map Demo 2</Header>
@@ -53,6 +60,7 @@ class App extends React.Component {
           <div>資料來源：丁香醫生</div>
           <MapContainer>
             <PrefecturalChinaV2
+              countryData={coronavirusCountryLevel}
               data={coronavirusDataPrefecturalLevel}
             />
           </MapContainer>

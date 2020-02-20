@@ -4,8 +4,9 @@ import * as d3 from 'd3';
 import provinces from '../data/china-provinces.json';
 import prefectures from '../data/china-prefectural-cities/congregated-data-geo.json';
 import { formatNumber } from '../utils';
-import InfoIcon from '../assets/map_legend_info_icon.svg';
-import Modal from './Modal';
+// import InfoIcon from '../assets/map_legend_info_icon.svg';
+import ZoomResetIcon from '../assets/zoom_reset_icon.svg';
+// import Modal from './Modal';
 
 
 const width = 650;
@@ -15,6 +16,8 @@ const height = width * mapRatio;
 const centerChinaLongtitude = 104.4898;
 const centerChinaLatitude = 37.5854;
 const DEFAULT_MAP_COLOR = '#DADADA';
+
+const breakPoint = '910px';
 
 const mapLegends = ['0', '1 - 50', '51 - 100', '100 +', '1000 +', '5,000 +', '10,000 +'];
 
@@ -39,9 +42,9 @@ const Container = styled.div`
 const CanvasContainer = styled.div`
   max-width: ${width}px;
   box-sizing: border-box;
-  border: 1px solid black;
   margin: 20px auto;
   position: relative;
+  background-color: #f2f2f2;
 `;
 
 const SubCanvasContainer = styled.div`
@@ -56,28 +59,44 @@ const Map = styled.svg`
   height: ${height}px;
 `;
 
-const ToolTip = styled.div`
-  color: #222;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0px 0px 2px 0px #a6a6a6;
-  padding: .5em;
-  text-shadow: #f5f5f5 0 1px 0;
-  opacity: 0.9;
-  position: fixed;
-  display: none;
-  z-index: 999;
-`;
-
 const LegendContainer = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
-  border: 1px solid blue;
-  transform: translateX(-100%);
   display: flex;
   flex-direction: column;
   font-size: 12px;
+  transform: translate(-100%, 0);
+  @media (max-width: ${breakPoint}) {
+    transform: translate(0,100%);
+  }
+`;
+
+const LegendsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  @media (max-width: 910px) {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    > div {
+      padding-right: 15px;
+    }
+  }
+  @media (max-width: 767px) {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    > div {
+      padding-right: 10px;
+    }
+  }
+  @media (max-width: 374px) {
+    display: grid;
+    grid-template-columns: auto auto;
+    > div {
+      padding-right: 5px;
+    }
+  }
 `;
 
 const ColorIcon = styled.div`
@@ -97,6 +116,56 @@ const Legend = styled.div`
 
 const InfoIconContainer = styled.div`
   margin: 8px 0 7px 0;
+`;
+
+const ToolTipWrapper = styled.div`
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  transform: translate(100%, 0);
+  @media (max-width: ${breakPoint}) {
+    transform: translate(0,100%);
+  }
+`;
+
+const ToolTip = styled.div`
+  color: #222;
+  background: #fff;
+  border: 1px solid #707070;
+  min-height: 100px;
+  min-width: 100px;
+  color: black;
+  > div {
+    padding: 16px;
+  }
+  > div > div {
+    &:nth-child(3) {
+      margin: 8px 0;
+    }
+  }
+  > div > div {
+    &:nth-child(1) {
+      border-bottom: 1px solid black;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+  }
+`;
+
+
+const ResetZoom = styled.div`
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #D1D1D1;
+  cursor: pointer;
 `;
 
 
@@ -136,16 +205,10 @@ const generateTooltipContent = ({ name, adcode, data }) => {
         確診：${formatNumber(confirmedCount)}
       </div>
       <div>
-        當前確診：${formatNumber(currentConfirmedCount)}
-      </div>
-      <div>
-        疑似病例：${formatNumber(suspectedCount)}
+        死亡：${formatNumber(deadCount)}
       </div>
       <div>
         康復：${formatNumber(curedCount)}
-      </div>
-      <div>
-        死亡：${formatNumber(deadCount)}
       </div>
     </div>
   `;
@@ -250,6 +313,9 @@ class PrefecturalChinaV2 extends PureComponent {
           this.hookUpZoomMap.call(this.zoom.transform, d3.zoomIdentity);
         }
       })
+      .catch((e) => {
+        console.log('transition error');
+      })
   }
 
   _renderLegend() {
@@ -271,7 +337,9 @@ class PrefecturalChinaV2 extends PureComponent {
     return (
       <LegendContainer>
         <div>確診人數</div>
-        {Legends}
+        <LegendsWrapper>
+          {Legends}
+        </LegendsWrapper>
         {/*<InfoIconContainer>
           <InfoIcon width={17} height={17} />
         </InfoIconContainer>*/}
@@ -301,9 +369,9 @@ class PrefecturalChinaV2 extends PureComponent {
       .remove();
   }
 
-  _cleanToolTip() {
-    this.tooltip.style.display = 'none';
-  }
+  // _cleanToolTip() {
+  //   this.tooltip.style.display = 'none';
+  // }
 
   _zoomOut(d3SelectedMap) {
     this.isTransitioning = true;
@@ -319,7 +387,7 @@ class PrefecturalChinaV2 extends PureComponent {
       .end()
       .then(() => {
         this.isTransitioning = false;
-        this._cleanToolTip();
+        // this._cleanToolTip();
       })
       .catch((e) => {
         console.log('transition error');
@@ -327,13 +395,12 @@ class PrefecturalChinaV2 extends PureComponent {
   }
 
   _zoomIn(d, d3SelectedMap, path) {
-    this._cleanToolTip();
+    // this._cleanToolTip();
     this.isTransitioning = true;
     let x = 0;
     let y = 0;
     let scaleValue = 1;
     const bounds = path.bounds(d);
-    console.log('bounds: ', bounds)
     const centroidX = (bounds[0][0] + bounds[1][0]) / 2;
     const centroidY = (bounds[0][1] + bounds[1][1]) / 2;
     const dx = bounds[1][0] - bounds[0][0];
@@ -352,14 +419,14 @@ class PrefecturalChinaV2 extends PureComponent {
       .end()
       .then(() => {
         this.isTransitioning = false;
-        this._cleanToolTip();
+        // this._cleanToolTip();
       })
       .catch((e) => {
         console.log('transition error');
       })
   }
 
-  _cleanOutPrefectures(d, d3SelectedMap) {
+  _cleanOutPrefectures(d3SelectedMap) {
     d3SelectedMap
       .selectAll('path.prefecture')
       .filter((prefecture) => prefecture.properties.parent.adcode === this.centered.properties.adcode)
@@ -375,22 +442,22 @@ class PrefecturalChinaV2 extends PureComponent {
   }
 
   _onClickPrefecture(d, d3SelectedMap) {
-    this._cleanOutPrefectures(d, d3SelectedMap);
-    this._zoomOut(d3SelectedMap);
-    this.centered = null;
+    // this._cleanOutPrefectures(d3SelectedMap);
+    // this._zoomOut(d3SelectedMap);
+    // this.centered = null;
   }
 
   _onClickProvince(d, d3SelectedMap, path) {
     if (!d || this.centered === d) {
-      this.centered = null;
-      this._zoomOut(d3SelectedMap);
-      d3SelectedMap
-        .selectAll('path.prefecture')
-        .style('display', 'none');
+      // this.centered = null;
+      // this._zoomOut(d3SelectedMap);
+      // d3SelectedMap
+      //   .selectAll('path.prefecture')
+      //   .style('display', 'none');
     } else {
       // const centroid = path.centroid(d);
       if (this.centered) {
-        this._cleanOutPrefectures(d, d3SelectedMap);
+        this._cleanOutPrefectures(d3SelectedMap);
       }
       // const thePrefecturalCity = prefecturalCities[this.centered.properties.adcode];
       d3SelectedMap
@@ -493,32 +560,54 @@ class PrefecturalChinaV2 extends PureComponent {
           }));
       })
       .on('mousemove', (d) => {
-        let positionX = d3.event.clientX + 10;
-        const positionY = d3.event.clientY;
-        const tooltipRect = this.tooltip.getBoundingClientRect();
-        if ((positionX + tooltipRect.width) > window.innerWidth) {
-          positionX = d3.event.clientX - tooltipRect.width - 10;
-        }
+        // let positionX = d3.event.clientX + 10;
+        // const positionY = d3.event.clientY;
+        // const tooltipRect = this.tooltip.getBoundingClientRect();
+        // if ((positionX + tooltipRect.width) > window.innerWidth) {
+        //   positionX = d3.event.clientX - tooltipRect.width - 10;
+        // }
         d3SelectedTooltip
-          .style('top', `${positionY}px`)
-          .style('left', `${positionX}px`)
+          // .style('top', `${positionY}px`)
+          // .style('left', `${positionX}px`)
           .html(generateTooltipContent({
             name: d.properties.name,
             adcode: d.properties.adcode,
             data: getTooltipData(d, data),
           }));
       })
-      .on('mouseout', function () {
+      .on('mouseout', () => {
         if (!_getTransitionStatus()) {
-          d3
-            .select(this)
-          d3SelectedTooltip
-            .style('display', 'none');
+          this._renderDefaultToolTipContent();
         }
       });
   }
 
+  _renderDefaultToolTipContent() {
+    const { countryData } = this.props;
+    if (!countryData || !this.tooltip) {
+      return null;
+    }
+    const { confirmedCount, deadCount, curedCount } = countryData;
+    if (this.tooltip) {
+      this.tooltip.innerHTML = `
+        <div>
+          <div>中國</div>
+          <div>
+            確診：${formatNumber(confirmedCount)}
+          </div>
+          <div>
+            死亡：${formatNumber(deadCount)}
+          </div>
+          <div>
+            康復：${formatNumber(curedCount)}
+          </div>
+        </div>
+      `;
+    }
+  }
+
   render() {
+    this._renderDefaultToolTipContent();
     return (
       <Container>
         <CanvasContainer
@@ -529,14 +618,38 @@ class PrefecturalChinaV2 extends PureComponent {
               ref={node => { this.map = node; }}
             />
           </SubCanvasContainer>
-          <ToolTip
-            ref={(node) => { this.tooltip = node; }}
-          />
+          <ResetZoom
+            onClick={() => {
+              const map = d3.select(this.map);
+              this._cleanOutPrefectures(map)
+              this._zoomOut(map);
+              this.centered = null;
+            }}
+          >
+            <ZoomResetIcon />
+            <span>回上一層</span>
+          </ResetZoom>
+          <ToolTipWrapper>
+            {/*<ResetZoom
+              onClick={() => {
+                const map = d3.select(this.map);
+                this._cleanOutPrefectures(map)
+                this._zoomOut(map);
+                this.centered = null;
+              }}
+            >
+              <ZoomResetIcon />
+              <span>回上一層</span>
+            </ResetZoom>*/}
+            <ToolTip
+              ref={(node) => { this.tooltip = node; }}
+            />
+          </ToolTipWrapper>
           {this._renderLegend()}
         </CanvasContainer>
-        <Modal>
+        {/*<Modal>
           test
-        </Modal>
+        </Modal>*/}
       </Container>
     );
   }

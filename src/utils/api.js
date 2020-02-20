@@ -20,8 +20,14 @@ const asyncResolver = async (promise) => {
 async function fetchCoronavirusAreaData() {
   const result = await asyncResolver(fetch(`${coronavirusAPIOrigin}/${coronavirusAPIPath}/area?latest=1`));
   return result;
-};
+}
+
+async function fetchChianOverallData() {
+  const result = await asyncResolver(fetch(`${coronavirusAPIOrigin}/${coronavirusAPIPath}/overall`));
+  return result.data.results[0];
+}
 
 export default {
   fetchCoronavirusAreaData,
+  fetchChianOverallData,
 };
