@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g id="chinamap_return_btn_default" transform="translate(-1096 -285)">
+    <g id="Ellipse_8" data-name="Ellipse 8" transform="translate(1096 285)" fill="#fff" stroke="#000" stroke-width="2">
+      <circle cx="16" cy="16" r="16" stroke="none"/>
+      <circle cx="16" cy="16" r="15" fill="none"/>
+    </g>
+    <g id="return-arrow-curve-pointing-left" transform="translate(1103 289.46)">
+      <path id="Path_1457" data-name="Path 1457" d="M5.986,19.748v-2.4A.347.347,0,0,1,6.333,17h5.583a2.876,2.876,0,1,0,0-5.752l-6.454,0,2.5,2.486a.353.353,0,0,1,0,.486L6.407,15.768a.344.344,0,0,1-.486,0L.1,9.947a.343.343,0,0,1,0-.486l5.82-5.82a.344.344,0,0,1,.486,0L7.958,5.192a.344.344,0,0,1,0,.486l-2.5,2.477,6.454,0a5.967,5.967,0,1,1,0,11.935l-5.583,0A.347.347,0,0,1,5.986,19.748Z" transform="translate(0 0)"/>
+    </g>
+  </g>
+</svg>

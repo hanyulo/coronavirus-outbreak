@@ -5,7 +5,7 @@ import provinces from '../data/china-provinces-tranditional.json';
 import prefectures from '../data/china-prefectural-cities/congregated-data-geo-tranditional.json';
 import { formatNumber } from '../utils';
 // import InfoIcon from '../assets/map_legend_info_icon.svg';
-import ZoomResetIcon from '../assets/zoom_reset_icon.svg';
+import ZoomResetIcon from '../assets/zoom_reset_icon_dark.svg';
 // import Modal from './Modal';
 
 
@@ -44,7 +44,6 @@ const CanvasContainer = styled.div`
   box-sizing: border-box;
   margin: 20px auto;
   position: relative;
-  background-color: #f2f2f2;
 `;
 
 const SubCanvasContainer = styled.div`
@@ -69,6 +68,7 @@ const LegendContainer = styled.div`
   transform: translate(-100%, 0);
   @media (max-width: ${breakPoint}) {
     transform: translate(0,100%);
+    bottom: -3px;
   }
 `;
 
@@ -90,9 +90,16 @@ const LegendsWrapper = styled.div`
       padding-right: 10px;
     }
   }
-  @media (max-width: 374px) {
+  @media (max-width: 470px) {
     display: grid;
     grid-template-columns: auto auto;
+    > div {
+      padding-right: 10px;
+    }
+  }
+  @media (max-width: 373px) {
+    display: grid;
+    grid-template-columns: auto;
     > div {
       padding-right: 5px;
     }
@@ -129,15 +136,16 @@ const ToolTipWrapper = styled.div`
   transform: translate(100%, 0);
   @media (max-width: ${breakPoint}) {
     transform: translate(0,100%);
+    bottom: -3px;
   }
 `;
 
 const ToolTip = styled.div`
+  min-width: 180px;
+  min-height: 157px;
   color: #222;
   background: #fff;
   border: 1px solid #707070;
-  min-height: 100px;
-  min-width: 100px;
   color: black;
   > div {
     padding: 16px;
@@ -160,12 +168,15 @@ const ToolTip = styled.div`
 const ResetZoom = styled.div`
   position: absolute;
   bottom: 3px;
-  right: 5px;
+  right: 8px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  color: #D1D1D1;
+  color: #000000;
   cursor: pointer;
+  > svg {
+    margin-right: 10px;
+  }
 `;
 
 
@@ -216,11 +227,11 @@ const generateTooltipContent = ({ name, adcode, data }) => {
 
 const stageColorMap = {
   0: DEFAULT_MAP_COLOR,
-  1: '#F5C6E9',
-  2: '#D493BC',
-  3: '#BC659A',
-  4: '#803D79',
-  5: '#451458',
+  1: '#FAF4C0',
+  2: '#FFE09D',
+  3: '#F2A966',
+  4: '#D493BC',
+  5: '#803D79',
   6: '#270048',
 };
 
