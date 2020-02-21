@@ -1,3 +1,6 @@
+## 3.0.1
+* style modification for prefectural level map
+
 ## 3.0.0
 * single china map with following features
     1. prefectural level
