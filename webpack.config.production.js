@@ -15,13 +15,14 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   mode: 'production',
   entry: {
-    PrefecturalChinaV2: './src/components/PrefecturalChinaV2.js',
+    PrefecturalChina: './src/components/PrefecturalChinaRefactor.js',
+    ChinaChronological: './src/components/ChinaChronological.js',
   },
   plugins: [
     new CleanWebpackPlugin(),
   ],
   output: {
-    filename: 'index.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: 'commonjs2',
   },
