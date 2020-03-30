@@ -1,3 +1,12 @@
+## 3.0.2
+* new PrefecturalChina
+    * refactor
+    * works on safari
+    * react-hooks
+* separates modules in dist
+    1. ChinaChronological
+    2. PrefecturalChina
+
 ## 3.0.1
 * style modification for prefectural level map
 
