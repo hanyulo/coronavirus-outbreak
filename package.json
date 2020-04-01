@@ -54,7 +54,8 @@
     "fetchdata": "node ./src/utils/fetchSpreadSheet",
     "build": "webpack --config webpack.config.production.js",
     "build:page": "webpack --config webpack.config.public.production.js",
-    "deploy": "npm run build:page && gh-pages -d published_dist"
+    "deploy": "npm run build:page && gh-pages -d published_dist",
+    "publish:customized": "cp ./package.json ./dist && cd ./dist && npm publish"
   },
   "repository": {
     "type": "git",
@@ -71,5 +72,8 @@
   "bugs": {
     "url": "https://github.com/hanyulo/coronavirus-outbreak/issues"
   },
-  "homepage": "https://github.com/hanyulo/coronavirus-outbreak#readme"
+  "homepage": "https://github.com/hanyulo/coronavirus-outbreak#readme",
+  "dependencies": {
+    "versor": "^0.1.2"
+  }
 }
