@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import ChinaChronological from './components/ChinaChronological';
-import PrefecturalChina from './components/PrefecturalChina';
-import PrefecturalChinaV2 from './components/PrefecturalChinaV2';
-
-import testData from './data/testData.json';
-import coronavirus from './data/virus/coronavirus.json';
+// import ChinaChronological from './components/ChinaChronological';
+// import PrefecturalChina from './components/PrefecturalChina';
+// import PrefecturalChinaV2 from './components/PrefecturalChinaV2';
+// import testData from './data/testData.json';
+// import coronavirus from './data/virus/coronavirus.json';
+import Earth from './components/Earth';
 import API from './utils/api';
 import { extractData } from './utils/blankerl';
 
@@ -22,7 +22,7 @@ const Section = styled.div`
 `;
 
 const MapContainer = styled.div`
-  max-width: 1024px;
+  max-width: 500px;
   margin: 0 auto;
 `;
 
@@ -55,30 +55,37 @@ class App extends React.Component {
     const { coronavirusDataPrefecturalLevel, coronavirusCountryLevel } = this.state;
     return (
       <Container>
-        <Header>Map Demo 2</Header>
         <Section>
-          <div>資料來源：丁香醫生</div>
           <MapContainer>
-            <PrefecturalChinaV2
-              countryData={coronavirusCountryLevel}
-              data={coronavirusDataPrefecturalLevel}
-            />
+            <Earth />
           </MapContainer>
         </Section>
-        {/*<Section>
-          <div>資料來源：每日頭條（github.com/canghailan）</div>
-          <PrefecturalChina
-            data={coronavirus}
-          />
-        </Section>
-        <Section>
-          <ChinaChronological
-            data={testData}
-          />
-      </Section>*/}
       </Container>
     );
   }
 }
 
 export default App;
+
+
+// <Header>Map Demo 2</Header>
+// <Section>
+//   <div>資料來源：丁香醫生</div>
+//   <MapContainer>
+//     <PrefecturalChinaV2
+//       countryData={coronavirusCountryLevel}
+//       data={coronavirusDataPrefecturalLevel}
+//     />
+//   </MapContainer>
+// </Section>
+// {/*<Section>
+//   <div>資料來源：每日頭條（github.com/canghailan）</div>
+//   <PrefecturalChina
+//     data={coronavirus}
+//   />
+// </Section>
+// <Section>
+//   <ChinaChronological
+//     data={testData}
+//   />
+// </Section>*/}
