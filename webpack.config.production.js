@@ -17,6 +17,7 @@ module.exports = {
   entry: {
     PrefecturalChina: './src/components/PrefecturalChinaRefactor.js',
     ChinaChronological: './src/components/ChinaChronological.js',
+    Earth: './src/components/Earth.js',
   },
   plugins: [
     new CleanWebpackPlugin(),

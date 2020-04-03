@@ -27,7 +27,17 @@ async function fetchChianOverallData() {
   return result.data.results[0];
 }
 
+async function fetchLatestDate() {
+  const url = 'https://tpts-public.s3-ap-southeast-1.amazonaws.com/latest-coronavirus-stats.json';
+  const result = await asyncResolver(fetch(url));
+  if (result && !result.error) {
+    return result.data;
+  }
+  return null;
+}
+
 export default {
   fetchCoronavirusAreaData,
   fetchChianOverallData,
+  fetchLatestDate,
 };

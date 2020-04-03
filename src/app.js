@@ -32,6 +32,7 @@ class App extends React.Component {
     this.state = {
       coronavirusDataPrefecturalLevel: null,
       coronavirusCountryLevel: null,
+      latestData: null,
     };
   }
 
@@ -41,6 +42,7 @@ class App extends React.Component {
     const countryRes = await API.fetchChianOverallData();
     const { confirmedCount, deadCount, curedCount } = countryRes;
     const data = extractData(res.data.results);
+    const latestData = await API.fetchLatestDate();
     this.setState({
       coronavirusDataPrefecturalLevel: data,
       coronavirusCountryLevel: {
@@ -48,16 +50,31 @@ class App extends React.Component {
         deadCount,
         curedCount,
       },
+      latestData: this._latestDataProcessor(latestData.countries),
     });
   }
 
+  _latestDataProcessor(data) {
+    const map = {};
+    data.forEach((country) => {
+      map[country.ename] = {
+        confirmed: country.confirmed,
+        name: country.name,
+      };
+    });
+    return map;
+  }
+
+
   render() {
-    const { coronavirusDataPrefecturalLevel, coronavirusCountryLevel } = this.state;
+    const { coronavirusDataPrefecturalLevel, coronavirusCountryLevel, latestData } = this.state;
     return (
       <Container>
         <Section>
           <MapContainer>
-            <Earth />
+            <Earth
+              data={latestData}
+            />
           </MapContainer>
         </Section>
       </Container>
