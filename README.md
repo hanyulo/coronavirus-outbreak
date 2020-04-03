@@ -26,6 +26,12 @@ data visualization for coronavirus outbreak in China
     * `import { ChinaProvince, ChinaPrefectural } from 'coronavirus-outbreak'`
 * version 3.0.0
     * `import [whatever you want] from 'coronavirus-outbreak'`
+* version 3.0.3
+    ```js
+      import [whatever you want] from coronavirus-outbreak/PrefecturalChina;
+      import [whatever you want] from coronavirus-outbreak/ChinaChronological;
+      import [whatever you want] from coronavirus-outbreak/Earth;
+    ```
 
 
 ### Development
