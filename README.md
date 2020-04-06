@@ -1,24 +1,61 @@
 # coronavirus-outbreak
-data visualization for coronavirus outbreak in China
-
-## To Do List
-1. [X] Draw China Map
-2. [X] hover -> showname
-3. [X] crawl data from John Hopkins DOC
-4. [X] compile data and show it on map
-    * criteria: based on date
-5. [X] HK, Macau map
-6. [X] scroll bar position
-7. [X] simple mobile version
-8. [ ] ~~request real data from TPTS~~
-9. [ ] ~~need granular info presentation for district, city, etc in map~~
-10. [ ] ~~sophisticated mobile version~~
-    * scrollable
-    * same ratio
-11. [ ] clean my ugly code
+This is data visualization react-component-package for visualizing covid-19 outbreak. The package is mainly for Public Television Service at Taiwan.
 
 
 ## How to use it
+
+#### Latest
+* version 3.0.3
+
+```js
+import PrefecturalChina from coronavirus-outbreak/PrefecturalChina;
+import ChinaChronological from coronavirus-outbreak/ChinaChronological;
+import Earth from coronavirus-outbreak/Earth;
+
+
+return (
+  <div>
+    <Earth
+      data={latestData}
+    />
+    <PrefecturalChinaV2
+      countryData={coronavirusCountryLevel}
+      data={coronavirusDataPrefecturalLevel}
+    />
+    <ChinaChronological
+      data={data}
+    />
+  </div>
+)
+
+
+```
+
+#### Data Structure
+
+* Earth
+    * get `Latest` data and translate it to the following format
+
+```json
+// ename: country name in english
+// name: country name in mandarine
+// confirmed: number of confirmed covid-19
+[
+  {
+    [enmae]: {
+      cnofirmed: Number,
+      name: String,
+    }
+  },
+  ...
+]
+```
+
+* ChinaChronological
+    * just pour the `Time Series` data into the component.
+
+#### Obsolete
+
 * `npm install coronavirus-outbreak`
 * version 1.0.3
     * `import [whatever you want] from 'coronavirus-outbreak'`
@@ -26,12 +63,11 @@ data visualization for coronavirus outbreak in China
     * `import { ChinaProvince, ChinaPrefectural } from 'coronavirus-outbreak'`
 * version 3.0.0
     * `import [whatever you want] from 'coronavirus-outbreak'`
-* version 3.0.3
-    ```js
-      import [whatever you want] from coronavirus-outbreak/PrefecturalChina;
-      import [whatever you want] from coronavirus-outbreak/ChinaChronological;
-      import [whatever you want] from coronavirus-outbreak/Earth;
-    ```
+
+
+## [Related Data]((https://github.com/hanyulo/coronavirus-data-hub)
+* [Time Series](https://tpts-public.s3-ap-southeast-1.amazonaws.com/china-coronavirus-timeseries.json)
+* [Latest](https://tpts-public.s3-ap-southeast-1.amazonaws.com/latest-coronavirus-stats.json)
 
 
 ### Development
