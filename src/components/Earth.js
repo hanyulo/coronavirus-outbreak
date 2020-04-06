@@ -182,14 +182,15 @@ function Earth({
     let v0 = null;
     let r0 = null;
     let q0 = null;
+    // const angles = ["λ", "φ", "γ"];
 
-    const angles = ["λ", "φ", "γ"];
+    const angles = [];
     function update(eulerAngles){
-      angles.forEach(function(angle, index){
-        d3.select(".angle-label-" + index + " span").html(Math.round(eulerAngles[index]))
-        d3.select(".angle-" + index).property("value", eulerAngles[index])
-      });
-      projection.rotate(eulerAngles);
+      // angles.forEach(function(angle, index){
+      //   d3.select(".angle-label-" + index + " span").html(Math.round(eulerAngles[index]))
+      //   d3.select(".angle-" + index).property("value", eulerAngles[index])
+      // });
+      projection.rotate([eulerAngles[0], -20, 0]);
     }
 
 
