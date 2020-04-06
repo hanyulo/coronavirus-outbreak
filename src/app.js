@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-// import ChinaChronological from './components/ChinaChronological';
+import ChinaChronological from './components/ChinaChronological';
 // import PrefecturalChina from './components/PrefecturalChina';
-// import PrefecturalChinaV2 from './components/PrefecturalChinaV2';
-// import testData from './data/testData.json';
+import PrefecturalChinaV2 from './components/PrefecturalChinaV2';
+import testData from './data/testData.json';
 // import coronavirus from './data/virus/coronavirus.json';
 import Earth from './components/Earth';
 import API from './utils/api';
@@ -76,6 +76,20 @@ class App extends React.Component {
               data={latestData}
             />
           </MapContainer>
+        </Section>
+        <Section>
+          <div>資料來源：丁香醫生</div>
+          <MapContainer>
+            <PrefecturalChinaV2
+              countryData={coronavirusCountryLevel}
+              data={coronavirusDataPrefecturalLevel}
+            />
+          </MapContainer>
+        </Section>
+        <Section>
+          <ChinaChronological
+            data={testData}
+          />
         </Section>
       </Container>
     );
