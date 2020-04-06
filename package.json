@@ -1,6 +1,6 @@
 {
   "name": "coronavirus-outbreak",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "data visualization project for coronavirus outbreak",
   "main": "dist/index.js",
   "peerDependencies": {

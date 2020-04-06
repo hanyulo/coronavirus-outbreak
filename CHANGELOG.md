@@ -1,3 +1,6 @@
+## 3.0.4
+* earth
+    * can only be rotated horizontally
 ## 3.0.3
 * new feature
     * earth
