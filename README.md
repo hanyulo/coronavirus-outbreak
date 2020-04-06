@@ -5,7 +5,7 @@ This is data visualization react-component-package for visualizing covid-19 outb
 ## How to use it
 
 #### Latest
-* version 3.0.3
+* version 3.0.4
 
 ```js
 import PrefecturalChina from coronavirus-outbreak/PrefecturalChina;
