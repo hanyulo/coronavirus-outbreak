@@ -40,15 +40,17 @@ return (
 // ename: country name in english
 // name: country name in mandarine
 // confirmed: number of confirmed covid-19
-[
-  {
-    "[enmae]": {
-      "cnofirmed": "Number",
-      "name": "String",
-    }
-  }
+{
+  "[enmae]": {
+    "cnofirmed": "Number",
+    "name": "String",
+  },
+  "[enmae]": {
+    "cnofirmed": "Number",
+    "name": "String",
+  },
   ...
-]
+}
 ```
 
 * ChinaChronological
