@@ -42,11 +42,11 @@ return (
 // confirmed: number of confirmed covid-19
 {
   "[enmae]": {
-    "cnofirmed": "Number",
+    "confirmed": "Number",
     "name": "String",
   },
   "[enmae]": {
-    "cnofirmed": "Number",
+    "confirmed": "Number",
     "name": "String",
   },
   ...
